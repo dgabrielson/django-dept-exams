@@ -1,0 +1,34 @@
+{% extends 'exams/__base.html' %}
+
+{# ########################################### #}
+
+{% block page_title %}List of Exams and Test{% endblock %}
+{% block title %}List of Exams and Tests{% endblock %}
+
+{# ########################################### #}
+
+{% block content %}
+
+{% if object_list %}
+    <ul>
+    {% for exam in object_list %}
+        <li>
+            <a href="{{ exam.get_absolute_url }}">
+                {{ exam.course }}
+                {% if exam.sections.all|length == 1 %}
+                    {{ exam.sections.all.0.section_name }}
+                {% endif %}
+                {{ exam }}
+            </a>
+        </li>
+    {% empty %}
+        <li>There are no exams or tests.</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+
+{% endblock content %}
+
+
+{# ########################################### #}

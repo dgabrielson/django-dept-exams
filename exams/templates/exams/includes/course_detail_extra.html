@@ -1,0 +1,15 @@
+{% load exams_tags %}
+
+{# we have a 'course' object -- that's all! #}
+
+{% with examfiles=course|old_examfiles %}
+    {% if examfiles %}
+        <ul class="pagenav">
+            <li>
+                <a href="{% url 'exams-examfiles-forcourse' slug=course.slug %}">
+                    Old exams
+                </a>
+            </li>
+        </ul>
+    {% endif %}
+{% endwith %}

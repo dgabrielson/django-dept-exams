@@ -1,0 +1,8 @@
+{% url 'exams-list' as app_top_url %}
+{% if app_top_url %}
+    {% if app_top_url != request.path %}
+        <a href="{{ app_top_url }}">Exams</a>
+    {% else %}
+        Exams
+    {% endif %}
+{% endif %}

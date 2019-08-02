@@ -1,0 +1,17 @@
+{% load djtwit humanize %}{% singlespace %}{% with exam=shout %}
+    Only 
+    {{ exam.dtstart|timeuntil }}
+    until
+    {{ exam.course }}
+    {% if exam.sections.all|length == 1 %}
+        {{ exam.sections.all.0.section_name }}
+    {% endif %} 
+    {{ exam }}:
+    {{ exam.dtstart|naturalday:"l, F j" }}
+    at
+    {{ exam.dtstart|time:"g:i a" }}
+    #UpcomingExam 
+    {{ exam.course|hashtag }}
+    http://{{ site }}{{ exam.get_absolute_url }}
+{% endwith %}
+{% endsinglespace %}

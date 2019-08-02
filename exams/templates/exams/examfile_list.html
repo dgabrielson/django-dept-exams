@@ -1,0 +1,49 @@
+{% extends 'exams/__base.html' %}
+
+{# ########################################### #}
+
+{% block page_title %}Old Exams and Tests{% endblock %}
+{% block title %}Old Exams and Tests{% endblock %}
+
+{# ########################################### #}
+
+{% block content %}
+
+{% if object_list %}
+    <p>
+        These courses have old exams:
+    </p>
+    <ul>
+        {% for course in object_list.course_qs %}
+            <li>
+                <a href="{% url 'exams-examfiles-forcourse' slug=course.slug %}">
+                    {{ course.label }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>
+        There are no exams or tests.
+    </p>
+{% endif %}
+
+
+{% endblock content %}
+
+
+{# ########################################### #}
+
+{% block page_breadcrumbs %}
+    {% url 'exams-examfile-list' as model_list_url %}
+    {% if model_list_url %}
+        <span class="divider">&gt;</span>
+        {% if model_list_url != request.path %}
+            <a href="{{ model_list_url }}">Archive</a>
+        {% else %}
+            Archive
+        {% endif %}
+    {% endif %}
+{% endblock page_breadcrumbs %}
+
+{# ########################################### #}

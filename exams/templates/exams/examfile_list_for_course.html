@@ -1,0 +1,62 @@
+{% extends 'exams/examfile_list.html' %}
+
+{# ########################################### #}
+
+{% block page_title %}Archived Exams for {{ course.label }}{% endblock %}
+{% block title %}Archived Exams for {{ course.label }}{% endblock %}
+
+{# ########################################### #}
+
+{% block content %}
+
+<p>
+    Past examinations are provided for training purposes.
+    There is no guarantee that your examinations will in any way mimic them.
+</p>
+
+{% block content_nav %}
+<ul class="pagenav">
+    <li>
+        <a href="{% url 'classes-course-detail' slug=course.slug %}">
+            {{ course.label }} course page
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+
+{% if object_list %}
+    {% regroup object_list by verbose_name as grp_list %}
+    {% for item in grp_list %}
+        <h2>{{ item.grouper }}{{ item.list|pluralize }}</h2>
+        <ul>
+            {% for examfile in item.list reversed %}
+                {% if examfile.get_absolute_url %}
+                <li>
+                    <a href="{{ examfile.get_absolute_url }}">
+                        {{ examfile.semester }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endfor %}
+{% else %}
+    <p>
+        This course has no archived old exams or tests.
+    </p>
+{% endif %}
+
+
+{% endblock content %}
+
+
+{# ########################################### #}
+
+{% block page_breadcrumbs %}
+    {{ block.super }}
+    <span class="divider">&gt;</span>
+    {{ course.label }}
+{% endblock page_breadcrumbs %}
+
+{# ########################################### #}

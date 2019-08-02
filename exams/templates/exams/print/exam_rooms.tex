@@ -1,0 +1,121 @@
+\documentclass{article}
+
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{charter}
+
+\geometry{paperwidth=11in,paperheight=17in}
+\geometry{margin=1in,top=0.5in}
+%\geometry{landscape}
+
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{resize to}[letterpaper,border shrink=1mm] 
+
+
+\renewcommand{\tiny}{\fontsize{12}{14}\selectfont}
+\renewcommand{\scriptsize}{\fontsize{14.4}{18}\selectfont}   
+\renewcommand{\footnotesize}{\fontsize{17.28}{22}\selectfont}
+\renewcommand{\small}{\fontsize{20.74}{25}\selectfont}
+\renewcommand{\normalsize}{\fontsize{24.88}{30}\selectfont}
+\renewcommand{\large}{\fontsize{29.86}{37}\selectfont}
+\renewcommand{\Large}{\fontsize{35.83}{45}\selectfont}
+\renewcommand{\LARGE}{\fontsize{43}{54}\selectfont}
+\renewcommand{\huge}{\fontsize{51.6}{64}\selectfont}
+\renewcommand{\Huge}{\fontsize{61.92}{77}\selectfont}
+\newcommand{\veryHuge}{\fontsize{74.3}{93}\selectfont}
+\newcommand{\VeryHuge}{\fontsize{89.16}{112}\selectfont}
+\newcommand{\VERYHuge}{\fontsize{107}{134}\selectfont}
+
+\pagestyle{empty}
+
+
+% REVISED WATERMARK:
+%\usepackage{graphicx}
+%\usepackage{type1cm}
+%\usepackage{eso-pic}
+%\usepackage{color}
+%
+%\makeatletter
+%\AddToShipoutPicture{%
+%            \setlength{\@tempdimb}{.5\paperwidth}%
+%            \setlength{\@tempdimc}{.5\paperheight}%
+%            \setlength{\unitlength}{1pt}%
+%            \put(\strip@pt\@tempdimb,\strip@pt\@tempdimc){%
+%        			\makebox(0,0){%
+%					\rotatebox{45}{%
+%						\textcolor[gray]{0.75}{%
+%							{\fontsize{8em}{8em}\selectfont REVISED}%
+%        					}%
+%					}%
+%				}%
+%            }%
+%}
+%\makeatother
+
+
+\newcommand{\theCourse}{%
+    {% for course in exam.course_list %}%
+        {{ course.label }}{% if exam.sections.all|length == 1 %} {{ exam.sections.all.0.section_name }}{% endif %}{% if not forloop.last %}/{% endif %}%
+    {% endfor %}%
+}
+\newcommand{\theExam}{%
+    {{ exam }}%
+}
+\newcommand{\theDate}{%
+    {{ exam.dtstart|date:"F j, Y" }}%
+}
+\newcommand{\theTime}{%
+	{{ exam.dtstart|time:"g:i A" }}%
+}
+\newcommand{\theFinishTime}{%
+	{{ exam.dtend|time:"g:i A" }}%
+}
+
+
+
+{% autoescape off %}
+
+\begin{document}
+
+\begin{center}
+\LARGE \textbf{\theCourse\  \theExam}
+
+\medskip
+
+\Large 
+	\theDate \\
+	\theTime\ -- \theFinishTime
+\end{center}
+
+{% if exam.examlocation_set.active|length > 26 %}
+    \small
+{% endif %}
+
+\vspace*{3ex}
+
+\begin{longtable}{r@{ -- }l@{\qquad\qquad\qquad}l}
+	\toprule
+	\multicolumn{2}{c}{\textbf{Family Name} \qquad\qquad\mbox{}} & \textbf{Exam} \\
+	\multicolumn{2}{c}{\textbf{starts with} \qquad\qquad\mbox{}} & \textbf{Room}\\
+	\midrule
+	\endhead
+	\bottomrule
+	\endfoot
+%%%%%%
+{% for location in exam.examlocation_set.active %}%
+%
+{% if location.start_letter != location.finish_letter %}%
+{{ location.start_letter|title }} & {{ location.finish_letter|title }} %
+{% else %}%
+\multicolumn{2}{c}{ {{ location.start_letter|title }} \phantom{ -- } \qquad\qquad\mbox{} }%
+{% endif %}%
+    & {{ location.location }} {% if not forloop.last %} \\{% endif %}
+{% endfor %}%
+\end{longtable}
+
+{% include 'exams/print/includes/room_poster_extra.tex' %}
+
+\end{document}
+
+{% endautoescape %}

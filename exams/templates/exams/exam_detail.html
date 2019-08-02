@@ -1,0 +1,92 @@
+{% extends 'exams/__base.html' %}
+{% load cache %}
+
+{# ########################################### #}
+
+{% block page_title %}{{ exam.course }} {% if exam.sections.all|length == 1 %}
+                    {{ exam.sections.all.0.section_name }}
+                {% endif %}
+ {{ exam }}{% endblock %}
+{% block title %}{{ exam.course }} {% if exam.sections.all|length == 1 %}
+                    {{ exam.sections.all.0.section_name }}
+                {% endif %}
+{{ exam }}{% endblock %}
+
+{# ########################################### #}
+
+{% block content %}
+
+{% if exam %}
+
+    {% cache 900 exam_details exam.slug %}
+
+        <h3>
+            {{ exam.dtstart|date:"l, F j" }}
+            at
+            {{ exam.dtstart|time:"g:i a" }}
+        </h3>
+
+        {% if exam.sections.all|length == 1 %}
+            {% with instructor=exam.sections.all.0.instructor %}
+                {% if instructor %}
+                    <p>
+                        <strong>Instructor:</strong>
+                        {{ instructor }}
+                    </p>
+                {% endif %}
+            {% endwith %}
+        {% endif %}
+
+        <p> <strong>Duration:</strong>
+            {{ exam.duration }} minutes.</p>
+
+        {% with room_list=exam.examlocation_set.active %}
+            {% if room_list %}
+                {% if room_list|length > 1 %}
+                    <p>Please go to the room indicated, based on your
+                        <strong>family name</strong>.</p>
+                    <p>Location:</p>
+                    <table>
+                    {% for room in room_list %}
+                        <tr>
+                        <th>{{ room }}</dh>
+                        <td>
+                            {{ room.start_letter|title }}
+                            {% with finish_letter=room.finish_letter %}
+                                {% if finish_letter|title != room.start_letter|title and finish_letter %}
+                                    &ndash; {{ finish_letter|title }}
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                {% else %}
+                     <p> <strong>Location:</strong>
+                        {{ room_list.0 }}</p>
+                {% endif %}
+            {% endif %}
+        {% endwith %}
+
+    {% endcache %}
+
+{% else %}
+    <p>There is no exam (or spoon).</p>
+{% endif %}
+
+
+
+{% endblock content %}
+
+
+{# ########################################### #}
+
+{% block page_breadcrumbs %}
+    <span class="divider">&gt;</span>
+    {{ exam.course }} {% if exam.sections.all|length == 1 %}
+                        {{ exam.sections.all.0.section_name }}
+                    {% endif %}
+    {{ exam }}
+{% endblock page_breadcrumbs %}
+
+{# ########################################### #}

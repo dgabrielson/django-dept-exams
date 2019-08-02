@@ -1,0 +1,40 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+
+    {% if original.active and original.slug and perms.exams.change_exam and original.examlocation_set.active %}
+
+        {% url 'admin:exams_exam_split_rooms' original.pk as link_url %}
+        {% if link_url and original.is_future and original.examlocation_set.active|length > 1 %}
+            <li><a href="{{ link_url }}" class="changesitelink">
+                Split Rooms</a>
+            </li>
+        {% endif %}
+
+        {% url 'admin:exam_room_poster' pk=original.pk as link_url %}
+        {% if link_url %}
+            <li><a href="{{ link_url }}" class="viewsitelink">
+                Room Poster</a>
+            </li>
+        {% endif %}
+
+        {% url 'exams-signature-sheet' slug=original.slug as link_url %}
+        {% if link_url %}
+            <li><a href="{{ link_url }}" class="viewsitelink">
+                Signature Sheets</a>
+            </li>
+        {% endif %}
+
+        {% url 'exams-signin-sheet' slug=original.slug as link_url %}
+        {% if link_url %}
+            <li><a href="{{ link_url }}" class="viewsitelink">
+                Sign-In Sheets</a>
+            </li>
+        {% endif %}
+
+    {% endif %}
+
+{{ block.super }}
+
+{% endblock %}

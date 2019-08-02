@@ -1,0 +1,37 @@
+{% extends './_course_resources.html' %}
+{% load exams_tags %}
+
+{% block page_title %}{{ course.label }} - Exams{% endblock %}
+{% block title %}{{ course.label }} – Exams{% endblock %}
+
+{# ########################################### #}
+
+{% block page_breadcrumbs %}
+    {{ block.super }}
+    <span class="divider">&gt;</span>
+    Exams
+{% endblock page_breadcrumbs %}
+
+{# ########################################### #}
+
+{% block content %}
+
+{% with object_list=course|all_examfiles %}
+    {% if object_list %}
+        <ul class="simple">
+            {% for item in object_list reversed %}
+                <li>
+                    <a href="{{ item.the_file.url }}">
+                        {{ item.verbose_name }} – {{ item.semester }}
+                    </a> – {{ item.get_public_display }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>
+            This course has no archived old exams or tests.
+        </p>
+    {% endif %}
+{% endwith %}
+
+{% endblock content %}

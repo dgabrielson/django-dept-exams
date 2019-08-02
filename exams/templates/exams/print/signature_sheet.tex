@@ -1,0 +1,100 @@
+\documentclass[12pt]{article}
+
+\newcommand{\theCourse}{%
+    {% for course in exam.course_list %}%
+        {{ course.label }}{% if not forloop.last %}/{% endif %}%
+    {% endfor %}%
+}
+\newcommand{\theExam}{%
+    {{ exam }}%
+}
+\newcommand{\theDate}{%
+    {{ exam.dtstart|date:"F j, Y" }}%
+}
+
+
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{charter}
+\usepackage{fancyhdr}
+\usepackage{changepage}
+
+
+\geometry{margin=0.3in,top=0.75in,bottom=0.4in}
+\pagestyle{fancy}
+\setlength{\headsep}{15pt}
+\setlength{\footskip}{12pt}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+
+{% autoescape off %}
+
+\begin{document}
+        \lhead{\theCourse: \theExam.}
+        \cfoot{\theDate}
+
+
+%%%%%%
+    {% for location in exam.examlocation_set.active %}%
+        \setcounter{page}{1}
+        \chead{%
+            {{ location.location }}, %
+            {{ location.registration_list|length }} students, %
+            {{ location.start_letter|title }} {% with finish_letter=location.finish_letter %}{% if finish_letter|title != location.start_letter|title %} -- {{ finish_letter|title }}{% endif %}{% endwith %} %
+        }
+        \rhead{ Page \thepage\ of \pageref{page:end-{{ forloop.counter }}-mark} }
+\begin{longtable}{lllp{0.45\textwidth}}
+    \toprule
+    \textbf{Name} & \textbf{St.\ Num.} & \textbf{Sec.} & \textbf{Signature \hfill Comments}\\
+    \midrule
+    \endhead
+    & & & \hspace*{\fill} Total \fbox{\phantom{\large MMM}} \\
+    \bottomrule
+    \endfoot
+        {% for reg in location.registration_list %}%
+            {{ reg.student }} &
+            {{ reg.student.student_number }} &
+            {{ reg.section.section_name }} &
+            \\
+            {% if forloop.counter|divisibleby:"30" %}
+                \newpage
+            {% else %}%
+                \midrule
+            {% endif %}%
+        {% endfor %}%
+        {% for i in location.blank_lines %}%
+            & & & \\ \midrule
+        {% endfor %}
+            & & &
+\end{longtable}
+
+    \vfill
+
+    \begin{flushright}
+    Total signatures: \fbox{\phantom{\large MMM}}
+    \end{flushright}
+    \label{page:end-{{ forloop.counter }}-mark}
+        {% if not forloop.last %}%
+            \newpage
+            \checkoddpage
+            \ifoddpage
+                % do nothing 
+            \else
+                % extra blank page
+                \thispagestyle{empty}
+                %\mbox{}
+                \vspace*{\fill}
+                \begin{center}
+                    THIS PAGE LEFT OTHERWISE BLANK
+                \end{center}
+                \vspace*{\stretch{2}}
+                \newpage
+            \fi
+        {% endif %}%
+    {% endfor %}%
+
+\end{document}
+
+{% endautoescape %}

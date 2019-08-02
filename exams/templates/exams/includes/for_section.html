@@ -1,0 +1,50 @@
+<tr>
+    <th>
+        {{ exam.type }}
+    </th>
+    <th>
+        Date:
+    </th>
+    <td>
+        {{ exam.dtstart|date:"l, F j" }}
+    </td>
+</tr>
+<tr>
+    <td></td>
+    <th>
+        Time:
+    </th>
+    <td>
+        {{ exam.dtstart|time:"g:i a" }}
+    </td>
+</tr>
+<tr>
+    <td></td>
+    <th>
+        Duration:
+    </th>
+    <td>
+        {{ exam.duration }} minutes
+    </td>
+</tr>
+
+    {% with room_list=exam.examlocation_set.active %}
+        {% if room_list %}
+        <tr> 
+            <td>
+            </td>               
+            <th>
+                Location:
+            </th>
+            <td>
+                {% if room_list|length > 1 %}
+                    <a href="{{ exam.get_absolute_url }}">
+                        [details]
+                    </a>
+                {% else %}
+                    {{ room_list.0 }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+    {% endwith %}

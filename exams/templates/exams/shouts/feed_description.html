@@ -1,0 +1,10 @@
+{% with exam=shout %}
+    <strong>{{ exam.course }}
+            {% if exam.sections.all|length == 1 %}
+                {{ exam.sections.all.0.section_name }}
+            {% endif %} 
+           {{ exam }}</strong>:
+    {{ exam.dtstart|date:"l, F j" }}
+    at
+    {{ exam.dtstart|time:"g:i a" }}
+{% endwith %}
