@@ -1,5 +1,4 @@
-#django-dept-exams
-
+# django-dept-exams
 
 This app provides a data model and interface for managing exams, including:
 - scheduling to classrooms
